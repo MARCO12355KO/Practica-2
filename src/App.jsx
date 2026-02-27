@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from "react";
-import PokemonCard from "./components/PokemonCard";
-import PokemonModal from "./components/PokemonModal";
-import TeamPanel from "./components/TeamPanel";
+import PokemonCard from "./components/PokemonCard.jsx";
+import PokemonModal from "./components/PokemonModal.jsx";
+import TeamPanel from "./components/TeamPanel.jsx";
 
 export default function App() {
   const [pokemons, setPokemons] = useState([]);
