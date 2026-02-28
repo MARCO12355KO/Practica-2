@@ -69,7 +69,7 @@ export default function PokemonCard({
         <button
           type="button"
           onClick={onAdd}
-          className={`flex-1 text-white px-2 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-red-500/40 active:scale-95 flex justify-center items-center gap-1 ${inTeam ? 'bg-red-600 hover:bg-red-700' : 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/40'}`}
+          className={`flex-1 text-white px-2 py-2.5 rounded-xl text-sm font-semibold transition-all active:scale-95 flex justify-center items-center gap-1 ${inTeam ? 'bg-red-600 hover:bg-red-700 shadow-sm hover:shadow-red-500/40' : 'bg-emerald-500 hover:bg-emerald-600 shadow-sm hover:shadow-emerald-500/40'}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
