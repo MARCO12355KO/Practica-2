@@ -1,5 +1,12 @@
-import { useEffect, useState, useRef } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+
+// Diccionario de colores de Tailwind para cada tipo de Pokémon
+const typeColors = {
+  normal: "bg-stone-400", fire: "bg-red-500", water: "bg-blue-500", electric: "bg-yellow-400 text-yellow-900", 
+  grass: "bg-emerald-500", ice: "bg-cyan-300 text-cyan-900", fighting: "bg-orange-700", poison: "bg-purple-500", 
+  ground: "bg-yellow-600", flying: "bg-indigo-400", psychic: "bg-pink-500", bug: "bg-lime-500", rock: "bg-yellow-800", 
+  ghost: "bg-purple-700", dragon: "bg-indigo-700", dark: "bg-slate-800", steel: "bg-slate-400", fairy: "bg-pink-400"
+};
 
 export default function PokemonModal({ url = "", onClose = () => {} }) {
   const [pokemon, setPokemon] = useState(null);
@@ -44,26 +51,20 @@ export default function PokemonModal({ url = "", onClose = () => {} }) {
   }, [onClose]);
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-      onClick={onClose}
-      aria-modal="true"
-      role="dialog"
-    >
-      <div
-        ref={modalRef}
-        className="bg-white rounded-lg p-6 relative w-72 text-center shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {loading && <p className="mb-4">Cargando...</p>}
-        {error && !loading && (
-          <p className="text-red-500 mb-4">{error}</p>
-        )}
+    // Fondo oscuro con desenfoque
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center z-50 p-4 transition-all">
+      
+      {/* Contenedor principal de la tarjeta */}
+      <div className="bg-white rounded-3xl p-6 relative w-full max-w-sm text-center shadow-2xl mt-12">
+        
+        {/* Botón de cerrar */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-4 text-2xl font-bold text-gray-500 hover:text-black"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors focus:outline-none"
         >
-          ×
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
         </button>
 
         <h2 className="capitalize font-bold text-2xl mt-2">{pokemon?.name}</h2>
@@ -83,15 +84,52 @@ export default function PokemonModal({ url = "", onClose = () => {} }) {
           <p>⚖️ Peso: {pokemon?.weight ?? "-"}</p>
         </div>
 
-        <div className="flex justify-center gap-2 mt-4">
-          {pokemon?.types?.map((typeInfo) => (
-            <span
-              key={typeInfo.type.name}
-              className="bg-gray-100 border border-gray-200 px-3 py-1 rounded text-sm capitalize"
-            >
-              {typeInfo.type.name}
-            </span>
-          ))}
+        {/* Nombre y Número */}
+        <span className="text-sm font-bold text-slate-400 tracking-widest uppercase">Nº {pokemon.id.toString().padStart(3, '0')}</span>
+        <h2 className="capitalize font-black text-3xl text-slate-800 mt-1 mb-4">{pokemon.name}</h2>
+        
+        {/* Tipos dinámicos */}
+        <div className="flex justify-center gap-2 mb-6">
+          {pokemon.types.map((typeInfo) => {
+            const typeName = typeInfo.type.name;
+            const colorClass = typeColors[typeName] || "bg-gray-500";
+            return (
+              <span
+                key={typeName}
+                className={`${colorClass} px-4 py-1.5 rounded-full text-xs font-bold text-white uppercase tracking-wider shadow-sm`}
+              >
+                {typeName}
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Cuadrícula de Estadísticas (Requisito de la práctica) */}
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col">
+            <span className="text-slate-400 text-xs font-bold uppercase mb-1">❤️ HP</span>
+            <span className="font-extrabold text-lg text-slate-700">{getStat("hp")}</span>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col">
+            <span className="text-slate-400 text-xs font-bold uppercase mb-1">⚔️ Ataque</span>
+            <span className="font-extrabold text-lg text-slate-700">{getStat("attack")}</span>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col">
+            <span className="text-slate-400 text-xs font-bold uppercase mb-1">🛡️ Defensa</span>
+            <span className="font-extrabold text-lg text-slate-700">{getStat("defense")}</span>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col">
+            <span className="text-slate-400 text-xs font-bold uppercase mb-1">⚡ Velocidad</span>
+            <span className="font-extrabold text-lg text-slate-700">{getStat("speed")}</span>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col">
+            <span className="text-slate-400 text-xs font-bold uppercase mb-1">📏 Altura</span>
+            <span className="font-extrabold text-lg text-slate-700">{pokemon.height / 10} m</span>
+          </div>
+          <div className="bg-slate-50 border border-slate-100 p-3 rounded-2xl flex flex-col">
+            <span className="text-slate-400 text-xs font-bold uppercase mb-1">⚖️ Peso</span>
+            <span className="font-extrabold text-lg text-slate-700">{pokemon.weight / 10} kg</span>
+          </div>
         </div>
       </div>
     </div>
